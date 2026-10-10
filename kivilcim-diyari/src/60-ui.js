@@ -36,7 +36,7 @@ function toast(msg, icon) {
   for (const c of w.children) if (c.dataset.m === msg) return;
   const d = document.createElement('div'); d.className = 'toast'; d.dataset.m = msg;
   d.innerHTML = (icon ? ic(icon) : '') + `<span>${esc(msg)}</span>`;
-  w.appendChild(d); while (w.children.length > 3) w.firstChild.remove();
+  w.appendChild(d); while (w.children.length > (VH < 420 ? 2 : 3)) w.firstChild.remove();
   setTimeout(() => d.remove(), 2800);
 }
 let banT = 0;
@@ -83,8 +83,8 @@ $('hotbar').addEventListener('click', e => { const b = e.target.closest('.slot')
 
 // ----- sheet -----
 let sheetTab = null;
-function openSheet(tab) { if (!G || state !== 'play') return; sheetTab = tab || 'tool'; $('sheet').hidden = false; $('scrim').hidden = false; renderSheet(); sfx('tap'); }
-function closeSheet() { sheetTab = null; $('sheet').hidden = true; $('scrim').hidden = true; }
+function openSheet(tab) { if (!G || state !== 'play') return; sheetTab = tab || 'tool'; $('sheet').hidden = false; $('scrim').hidden = false; document.body.classList.add('sheet-open'); renderSheet(); sfx('tap'); }
+function closeSheet() { sheetTab = null; $('sheet').hidden = true; $('scrim').hidden = true; document.body.classList.remove('sheet-open'); }
 function renderSheet() {
   $('tabs').innerHTML = CATS.map(([id, n, i]) => `<button data-t="${id}" class="${sheetTab === id ? 'on' : ''}">${ic(i)}${n}</button>`).join('') + `<button class="x" data-close aria-label="Kapat">×</button>`;
   const L = $('list');
