@@ -28,13 +28,14 @@
 <script src="core.js"></script>
 <script>
   // Load every module that exists; missing files are fine while they are being written.
-  const MODULES = ['characters.js', 'furniture.js', 'props.js', 'environment.js', 'icons.js'];
+  const MODULES = ['characters.js', 'furniture.js', 'nature.js', 'outdoor.js', 'icons.js', 'sketch.js', 'props.js', 'environment.js'];
   const qs = new URLSearchParams(location.search);
   const prefix = qs.get('prefix') || '';
   const bg = qs.get('bg') || 'cream';
   const SCALE = +(qs.get('scale') || 1.5);
   const ONLY_DEFAULT = qs.get('states') === 'default';
   const T = +(qs.get('t') || 0.3);
+  const SKETCH = qs.get('sketch') === '1';
   if (bg === 'night') document.body.classList.add('night');
   let pending = MODULES.length; const loadErrors = [];
   for (const m of MODULES) {
@@ -59,7 +60,7 @@
     const K = window.MinikArt;
     const names = K.list(prefix);
     document.getElementById('meta').innerHTML =
-      `${names.length} asset · prefix "${prefix || '*'}" · ölçek ${SCALE} · t=${T}` +
+      `${SKETCH ? 'kalem stili · ' : ''}${names.length} asset · prefix "${prefix || '*'}" · ölçek ${SCALE} · t=${T}` +
       (loadErrors.length ? ` · <span class="err">yüklenemedi: ${loadErrors.join(', ')}</span>` : '');
     const grid = document.getElementById('grid');
     for (const name of names) {
@@ -91,7 +92,10 @@
           cx.beginPath(); cx.arc(gx, baseY - 52, 12, 0, Math.PI * 2); cx.fill();
           cx.fillRect(gx - 10, baseY - 40, 20, 40);
         }
-        K.draw(cx, name, x0, sized ? pad : baseY, o);
+        if (SKETCH && K.sprite) {
+          const e = K.sprite(name, o, SCALE, true);
+          if (e) cx.drawImage(e.c, x0 - e.ax / e.q, (sized ? pad : baseY) - e.ay / e.q, e.c.width / e.q, e.c.height / e.q);
+        } else K.draw(cx, name, x0, sized ? pad : baseY, o);
         const v = document.createElement('div'); v.className = 'v';
         v.appendChild(c);
         const sp = document.createElement('span'); sp.textContent = label(st); v.appendChild(sp);

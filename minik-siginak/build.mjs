@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 
-const ART = ['art/core.js', 'art/characters.js', 'art/furniture.js', 'art/props.js', 'art/environment.js', 'art/icons.js'];
+const ART = ['../minik-art/core.js', '../minik-art/characters.js', '../minik-art/furniture.js', '../minik-art/props.js', '../minik-art/environment.js', '../minik-art/icons.js'];
 const SRC = fs.readdirSync(path.join(root, 'src')).filter(f => f.endsWith('.js')).sort().map(f => 'src/' + f);
 
 const missing = ART.filter(p => !fs.existsSync(path.join(root, p)));

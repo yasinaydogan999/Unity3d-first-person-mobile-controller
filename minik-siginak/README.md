@@ -38,16 +38,15 @@ sıcak lamba ışığı, sevimli karakterler.
 ```
 node build.mjs                      # dist/index.html (tek dosya) + dist/artifact.html
 node build.mjs --android            # ayrıca android/app/src/main/assets/index.html
-node tools/render-gallery.mjs "" galeri.png   # tüm çizimlerin önizlemesi
-node tools/export-assets.mjs        # PNG dışa aktarım + atlas.json
+node ../minik-art/tools/render-gallery.mjs "" galeri.png   # tüm çizimlerin önizlemesi
 node tools/make-android-icons.mjs   # uygulama ikonları
 ```
 
-Kaynak: `src/` (oyun), `art/` (MinikArt çizim kiti), `assets/` (PNG çıktıları, yazı tipi).
+Kaynak: `src/` (oyun), `../minik-art/` (ortak MinikArt çizim kiti), `assets/` (yazı tipi, ikon).
 
 ## Çizimler: MinikArt
 
-Tüm görseller bu projeye özel, kodla çizilmiş orijinal çizimlerdir (`art/`). Hiçbir oyundan,
+Tüm görseller bu projeye özel, kodla çizilmiş orijinal çizimlerdir (`../minik-art/`). Hiçbir oyundan,
 markadan ya da hazır paketten alıntı yoktur. Başka oyunlarda da kullanılabilir: ayrıntılar
-`art/README.md` ve `art/STYLE.md` dosyalarında. Yazı tipi Baloo 2, SIL Open Font License 1.1
+`../minik-art/README.md` ve `../minik-art/STYLE.md` dosyalarında. Yazı tipi Baloo 2, SIL Open Font License 1.1
 (`assets/fonts/OFL.txt`).

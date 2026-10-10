@@ -10,7 +10,7 @@ let playwright;
 try { playwright = require('playwright'); } catch { playwright = require('/opt/node-tools/node_modules/playwright'); }
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const art = ['core.js', 'characters.js', 'furniture.js', 'props.js', 'environment.js', 'icons.js']
-  .map(f => path.join(root, 'art', f)).filter(f => fs.existsSync(f)).map(f => fs.readFileSync(f, 'utf8')).join('\n');
+  .map(f => path.join(root, '..', 'minik-art', f)).filter(f => fs.existsSync(f)).map(f => fs.readFileSync(f, 'utf8')).join('\n');
 
 const SIZES = { mdpi: 48, hdpi: 72, xhdpi: 96, xxhdpi: 144, xxxhdpi: 192 };
 const html = `<!doctype html><html><body style="margin:0;background:transparent"><script>${art}</script><script>

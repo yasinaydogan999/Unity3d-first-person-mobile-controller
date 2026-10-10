@@ -1,5 +1,5 @@
 // Render the MinikArt gallery to a PNG so assets can be reviewed without a browser.
-// Usage: node tools/render-gallery.mjs <prefix|""> <out.png> [--bg=night] [--width=1400] [--scale=1.5] [--t=0.3] [--states=default]
+// Usage: node tools/render-gallery.mjs <prefix|""> <out.png> [--bg=night] [--width=1400] [--scale=1.5] [--t=0.3] [--states=default] [--sketch]
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +18,8 @@ const width = +(flags.width || 1400);
 
 const qs = new URLSearchParams({ prefix, bg: flags.bg || 'cream', scale: flags.scale || '1.5', t: flags.t || '0.3' });
 if (flags.states) qs.set('states', flags.states);
-const url = 'file://' + path.join(here, '..', 'art', 'gallery.html') + '?' + qs.toString();
+if (flags.sketch) qs.set('sketch', '1');
+const url = 'file://' + path.join(here, '..', 'gallery.html') + '?' + qs.toString();
 
 const browser = await playwright.chromium.launch();
 const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });

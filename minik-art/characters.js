@@ -423,42 +423,43 @@
       blob(ctx, cs, S.hair);
     }
   }
+  // Hair cap: covers the crown and the back of the head, leaving a big friendly face.
   function capPath(ctx, r, st) {
-    const a0 = -0.3, x0 = cos(a0) * r, y0 = sin(a0) * r;
     const low = st === 'bob' || st === 'long';
-    const ro = r + (st === 'bob' ? 2.6 : low ? 2.1 : st === 'curly' ? 2 : 1.5);
-    const nape = (low ? 0.57 : 0.76) * PI;
+    const a0 = low ? -0.5 : -0.58, x0 = cos(a0) * r, y0 = sin(a0) * r;
+    const ro = r + (st === 'bob' ? 2.4 : low ? 2 : st === 'curly' ? 2 : 1.5);
+    const nape = (low ? 0.55 : 0.72) * PI;
     ctx.beginPath(); ctx.moveTo(x0, y0);
     if (st === 'spiky') {
       const a1 = nape - TAU, n = 6;
       ctx.lineTo(cos(a0 - 0.05) * ro, sin(a0 - 0.05) * ro);
       for (let i = 0; i < n; i++) {
         const aa = a0 + (a1 - a0) * (i + 0.5) / n, ab = a0 + (a1 - a0) * (i + 1) / n;
-        const k = ro + 7 - abs(i - 2) * 0.9;
+        const k = ro + 6.5 - abs(i - 2) * 0.9;
         ctx.quadraticCurveTo(cos(aa) * k, sin(aa) * k, cos(ab) * ro, sin(ab) * ro);
       }
-    } else ctx.arc(0, 0, ro, a0 - 0.05, nape, true);
+    } else ctx.arc(0, 0, ro, a0 - 0.04, nape, true);
     if (low) {
-      ctx.quadraticCurveTo(r * 0.02, r * 1.05, r * 0.32, r * 0.74);
-      ctx.quadraticCurveTo(r * 0.14, r * 0.32, r * 0.22, -r * 0.08);
-      ctx.quadraticCurveTo(r * 0.58, -r * 0.1, x0, y0);
+      ctx.quadraticCurveTo(-r * 0.14, r * 1.1, r * 0.12, r * 0.88);   // lock curls under at the jaw
+      ctx.quadraticCurveTo(-r * 0.1, r * 0.42, -r * 0.04, -r * 0.2);  // up the cheek, over the ear
+      ctx.quadraticCurveTo(r * 0.32, -r * 0.3, r * 0.58, -r * 0.28);  // blunt bangs
+      ctx.quadraticCurveTo(r * 0.76, -r * 0.3, x0, y0);
     } else {
-      ctx.quadraticCurveTo(-r * 0.55, r * 0.66, -r * 0.3, r * 0.3);
-      ctx.quadraticCurveTo(-r * 0.12, -r * 0.18, r * 0.16, -r * 0.12);
-      ctx.quadraticCurveTo(r * 0.42, -r * 0.62, r * 0.66, -r * 0.4);
-      ctx.quadraticCurveTo(r * 0.8, -r * 0.3, x0, y0);
+      ctx.quadraticCurveTo(-r * 0.68, r * 0.5, -r * 0.52, r * 0.16);  // back edge to behind the ear
+      ctx.quadraticCurveTo(-r * 0.48, -r * 0.22, -r * 0.1, -r * 0.3); // over the ear to the temple
+      ctx.quadraticCurveTo(r * 0.2, -r * 0.64, r * 0.48, -r * 0.44);  // swept fringe
+      ctx.quadraticCurveTo(r * 0.68, -r * 0.4, x0, y0);
     }
     ctx.closePath();
   }
   function hairCap(ctx, S, D) {
     const r = D.R, st = S.hairStyle;
-    const curly = S.curls || st === 'curly';
     let bumps = null;
-    if (curly) {
+    if (S.curls || st === 'curly') {
       bumps = [];
-      const ro = r + 1.2, n = st === 'curly' ? 0 : 7;
-      for (let i = 0; i < n; i++) { const a = -0.55 - i * 0.47; bumps.push([cos(a) * ro, sin(a) * ro, 2.7]); }
-      bumps.push([r * 0.5, -r * 0.5, 2.6], [r * 0.2, -r * 0.3, 2.5]);
+      const ro = r + 1.1;
+      if (st !== 'curly') for (let i = 0; i < 6; i++) { const a = -0.95 - i * 0.5; bumps.push([cos(a) * ro, sin(a) * ro, 2.3]); }
+      bumps.push([r * 0.36, -r * 0.5, 2.3], [r * 0.08, -r * 0.4, 2.2]);
       ctx.fillStyle = OL;
       for (const b of bumps) { ctx.beginPath(); ctx.arc(b[0], b[1], b[2] + LW, 0, TAU); ctx.fill(); }
     }
@@ -470,20 +471,21 @@
     }
     hairShine(ctx, S, r);
   }
+  const EAR_X = -0.3, EAR_Y = 0.16;
   function ear(ctx, S, r) {
-    ell(ctx, -r * 0.1, r * 0.2, 3, 3.8, S.skin, 2);
-    ctx.beginPath(); ctx.arc(-r * 0.1 + 0.4, r * 0.2, 1.5, -1.3, 1.3); ctx.strokeStyle = SOFT; ctx.lineWidth = 1.2; ctx.stroke();
+    ell(ctx, r * EAR_X, r * EAR_Y, 3, 3.8, S.skin, 2);
+    ctx.beginPath(); ctx.arc(r * EAR_X + 0.4, r * EAR_Y, 1.5, -1.3, 1.3); ctx.strokeStyle = SOFT; ctx.lineWidth = 1.2; ctx.stroke();
   }
   function beard(ctx, S, r) {
     const ro = r + 1.8;
     ctx.beginPath();
-    ctx.moveTo(-r * 0.24, r * 0.02);
-    ctx.lineTo(cos(0.64 * PI) * ro, sin(0.64 * PI) * ro);
-    ctx.arc(0, 0, ro, 0.64 * PI, 0.15 * PI, true);
-    ctx.quadraticCurveTo(r * 0.6, r * 0.82, r * 0.26, r * 0.74);
-    ctx.quadraticCurveTo(-r * 0.02, r * 0.7, -r * 0.04, r * 0.15);
+    ctx.moveTo(-r * 0.42, r * 0.02);
+    ctx.lineTo(cos(0.66 * PI) * ro, sin(0.66 * PI) * ro);
+    ctx.arc(0, 0, ro, 0.66 * PI, 0.15 * PI, true);
+    ctx.quadraticCurveTo(r * 0.62, r * 0.84, r * 0.28, r * 0.76);
+    ctx.quadraticCurveTo(-r * 0.1, r * 0.72, -r * 0.18, r * 0.2);
     ctx.closePath(); ctx.fillStyle = S.hair; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = OL; ctx.stroke();
-    ctx.beginPath(); ctx.arc(0, r * 0.1, r * 0.82, 0.3 * PI, 0.45 * PI); ctx.strokeStyle = S.hairL; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, r * 0.1, r * 0.82, 0.32 * PI, 0.46 * PI); ctx.strokeStyle = S.hairL; ctx.lineWidth = 1.6; ctx.stroke();
   }
   function drawHat(ctx, S, D, R) {
     const r = D.R, c = S.hatCol;

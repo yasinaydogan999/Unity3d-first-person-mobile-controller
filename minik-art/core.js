@@ -97,6 +97,7 @@
     const cx = c.getContext('2d');
     cx.scale(scale, scale);
     draw(cx, name, ax + pad, ay + pad, Object.assign({}, o, { scale: 1, flip: false }));
+    cx.setTransform(1, 0, 0, 1, 0, 0);
     return c;
   }
 

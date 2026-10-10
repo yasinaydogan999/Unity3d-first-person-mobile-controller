@@ -104,9 +104,9 @@
       const p = fr(t * .55 + i / n), a = Math.min(1, p * 5) * (1 - p) * .9;
       if (a <= .02) continue;
       const px = x + Math.sin(p * 6 + i * 2.1) * sway, py = y - p * rise, r = size * (.55 + p * .7);
-      ctx.beginPath(); ctx.arc(px, py, r, 0, TAU);
-      ctx.fillStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')'; ctx.fill();
-      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(61,43,69,' + (a * .35).toFixed(3) + ')'; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px, py, r, 0, TAU); ctx.moveTo(px + r * 1.5, py + r * .35); ctx.arc(px + r * .8, py + r * .35, r * .7, 0, TAU);
+      ctx.fillStyle = 'rgba(255,255,255,' + (a * .9).toFixed(3) + ')'; ctx.fill();
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(61,43,69,' + (a * .18).toFixed(3) + ')'; ctx.stroke();
     }
   }
   function note(ctx, x, y, s, col) {
@@ -356,7 +356,7 @@
       hl(ctx, -50, -40, 2.6, 30, 1.3);
       heart(ctx, -46.5, -34, 3.2, P.coral, 1.3);
       nail(ctx, -46.5, -24); nail(ctx, -46.5, -12);
-      circ(ctx, -46.5, -44.5, 3.6, P.woodLight, 2);
+      circ(ctx, -46.5, -44, 3.3, P.woodLight, 2);
       orr(ctx, 42, -31, 10, 31, 4.5, P.wood);
       hl(ctx, 44, -28, 2.4, 20, 1.2);
       nail(ctx, 47, -20);
@@ -404,7 +404,7 @@
       const t = o.t || 0, lit = !!o.lit, cook = !!o.cooking;
       shadow(ctx, 0, -1, 30, 3.5);
       if (lit) { glow(ctx, -11, -29, 32, P.glow, .55); ell(ctx, -6, -1, 28, 3, 'rgba(255,190,110,.25)'); }
-      orr(ctx, -25, -8, 8, 8, 2.5, P.metalDark); orr(ctx, 17, -8, 8, 8, 2.5, P.metalDark);
+      orr(ctx, -25, -8, 8, 8, 2.5, P.metalDark); orr(ctx, 18, -8, 8, 8, 2.5, P.metalDark);
       // body
       orr(ctx, -28, -51, 56, 45, 9, P.mint);
       hl(ctx, -24, -48, 24, 3.2);
@@ -435,13 +435,13 @@
       orr(ctx, 7, -23, 16, 7.5, 1.5, P.metalLight, 1.4);
       dot(ctx, 9, -21, .8, OL); dot(ctx, 21, -21, .8, OL); dot(ctx, 9, -17.5, .8, OL); dot(ctx, 21, -17.5, .8, OL);
       // towel rail + checked tea towel
-      stick(ctx, -23, -11, 24, -11, P.metalLight, 1.8);
-      ctx.save(); rr(ctx, 9, -13, 12, 12, 3); ctx.fillStyle = P.cream; ctx.fill(); ctx.clip();
+      stick(ctx, -23, -12, 24, -12, P.metalLight, 1.8);
+      ctx.save(); rr(ctx, 4, -14, 12, 11, 3); ctx.fillStyle = P.cream; ctx.fill(); ctx.clip();
       ctx.fillStyle = 'rgba(255,127,92,.55)';
-      for (let i = 0; i < 3; i++) { ctx.fillRect(9 + i * 4.4, -13, 2.2, 12); ctx.fillRect(9, -12 + i * 4.2, 12, 2.1); }
+      for (let i = 0; i < 3; i++) { ctx.fillRect(4 + i * 4.4, -14, 2.2, 11); ctx.fillRect(4, -13 + i * 4.2, 12, 2.1); }
       ctx.restore();
-      rr(ctx, 9, -13, 12, 12, 3); ctx.lineWidth = 1.8; ctx.strokeStyle = OL; ctx.stroke();
-      orr(ctx, 8, -14.5, 14, 4, 2, P.coral, 1.5);
+      rr(ctx, 4, -14, 12, 11, 3); ctx.lineWidth = 1.8; ctx.strokeStyle = OL; ctx.stroke();
+      orr(ctx, 3, -15.5, 14, 4, 2, P.coral, 1.5);
       // top plate
       orr(ctx, -31, -55, 62, 6, 3, P.metalDark);
       hl(ctx, -28, -54, 30, 1.5);
@@ -455,8 +455,8 @@
         circ(ctx, -6, -70.3 + j, 1.9, P.sun, 1.3);
         if (lit) puffs(ctx, -6, -71, t, 3, 7, 3, 2.6);
       } else {
-        ctx.beginPath(); ctx.arc(13, -65.5, 6.2, 1.12 * PI, 1.88 * PI);
-        ctx.lineWidth = 4.2; ctx.strokeStyle = OL; ctx.stroke(); ctx.lineWidth = 1.6; ctx.strokeStyle = P.metalDark; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(7.5, -64); ctx.bezierCurveTo(7.5, -74, 18.5, -74, 18.5, -64);
+        ctx.lineWidth = 3.4; ctx.strokeStyle = OL; ctx.stroke(); ctx.lineWidth = 1.2; ctx.strokeStyle = P.metalLight; ctx.stroke();
         stick(ctx, 19, -60, 24.5, -65, P.teal, 2.6);
         orr(ctx, 5, -66, 16, 11, 5.5, P.teal);
         hl(ctx, 7.5, -64, 5, 2.4);
@@ -480,7 +480,7 @@
       if (lit) { glow(ctx, 0, -31, 36, P.glow, .55); ell(ctx, 0, -1, 27, 3, 'rgba(255,190,110,.28)'); }
       // pipe
       const px = 2;
-      stick(ctx, px, -52, px, top + 3.5, P.metal, 9);
+      orr(ctx, px - 4.5, top + 3, 9, -52 - top, 1, P.metal);
       ctx.beginPath(); for (let y = -66; y > top + 8; y -= 15) { ctx.moveTo(px - 4.5, y); ctx.lineTo(px + 4.5, y); }
       ctx.strokeStyle = SEAM; ctx.lineWidth = 1.3; ctx.stroke();
       line(ctx, px - 2.2, -56, px - 2.2, top + 7, 'rgba(255,255,255,.55)', 1.5);
@@ -488,12 +488,15 @@
       stick(ctx, px + 5, -77, px + 9.5, -77, P.metalDark, 1.5); circ(ctx, px + 11, -77, 2, P.coral, 1.2);
       tape(ctx, px, -93, 12, 5, -.15);
       // mitten drying on a string
-      ctx.save(); ctx.translate(px - 4.5, -84); ctx.rotate(Math.sin(t * 1.7) * (lit ? .16 : .05));
-      line(ctx, 0, 0, -4, 6.5, OL, 1.1);
-      ell(ctx, -1.2, 12.5, 2.4, 3.3, P.sky, 1.7, .35);
-      orr(ctx, -10, 9, 10, 11, 4.5, P.sky, 1.8);
-      fillR(ctx, -9, 13, 8, 2, 1, P.cream);
-      orr(ctx, -10.5, 6, 11, 4, 2, P.cream, 1.6);
+      line(ctx, px - 5, -86, px - 5, -83, OL, 1.1);
+      ctx.save(); ctx.translate(px - 5, -84); ctx.rotate(Math.sin(t * 1.7) * (lit ? .16 : .05));
+      line(ctx, 0, 0, -6, 4.5, OL, 1.1);
+      ell(ctx, -1.8, 13, 2.6, 3.6, P.sky, 1.7, .5);
+      orr(ctx, -12, 7, 10.5, 14, 5, P.sky, 1.8);
+      fillR(ctx, -11, 12.5, 8.5, 2.2, 1, P.cream);
+      hl(ctx, -10, 13.5 + 3, 2, 3, 1);
+      orr(ctx, -12.5, 4, 11.5, 4.5, 2, P.cream, 1.6);
+      ctx.beginPath(); for (let i = 0; i < 4; i++) { ctx.moveTo(-10.5 + i * 2.5, 4.8); ctx.lineTo(-10.5 + i * 2.5, 7.8); } ctx.strokeStyle = SEAM; ctx.lineWidth = .9; ctx.stroke();
       ctx.restore();
       // heat shimmer
       if (lit) {
@@ -515,16 +518,17 @@
       orr(ctx, -15, -55, 30, 6, 3, RIM);
       hl(ctx, -12, -54, 12, 1.5);
       // door with a heart window
-      orr(ctx, -10, -41, 20, 18, 6, RIM);
-      ctx.save(); heartPath(ctx, 0, -31.5, 6.2);
+      orr(ctx, -12, -43, 24, 22, 7, RIM);
+      hl(ctx, -10, -41, 2, 12, 1);
+      ctx.save(); heartPath(ctx, 0, -32, 8);
       ctx.fillStyle = lit ? P.fire1 : HOLE; ctx.fill(); ctx.clip();
-      if (lit) { fire(ctx, 0, -25.5, .5, t, 1.3); logs(ctx, 0, -25.5, P.woodDeep); }
-      else logs(ctx, 0, -26, P.stoneDark);
+      if (lit) { fire(ctx, 0, -24.5, .68, t, 1.3); logs(ctx, 0, -24.5, P.woodDeep); }
+      else { logs(ctx, 0, -25.5, P.stoneDark); dot(ctx, 2.5, -27.5, .9, 'rgba(255,170,90,.6)'); }
       ctx.restore();
-      heartPath(ctx, 0, -31.5, 6.2); ctx.lineWidth = 1.6; ctx.strokeStyle = OL; ctx.stroke();
-      stick(ctx, 8, -32, 13, -32, P.metalLight, 1.5);
-      dot(ctx, -8, -38, 1, P.metalLight); dot(ctx, -8, -26, 1, P.metalLight);
-      screw(ctx, -16, -27, 1.6, .4);
+      heartPath(ctx, 0, -32, 8); ctx.lineWidth = 1.7; ctx.strokeStyle = OL; ctx.stroke();
+      stick(ctx, 10, -32, 15, -32, P.metalLight, 1.5);
+      dot(ctx, -10, -39, 1, P.metalLight); dot(ctx, -10, -25, 1, P.metalLight);
+      screw(ctx, -17, -26, 1.6, .4);
     },
   });
 
@@ -744,38 +748,44 @@
   // ======================================================================
   K.define('st.armchair', {
     w: 66, h: 60, tags: ['prop', 'station', 'home', 'sit'],
-    desc: 'Cosy rose armchair with a mint patch, a knitted lilac throw and a heart cushion. Faces right (back on the left).',
+    desc: 'Cosy rose armchair with a mint patch, a knitted lilac throw over the back and a round sun cushion. Faces right (back on the left).',
     draw(ctx) {
       const C = FABRIC, CL = shade(FABRIC, .25), CD = shade(FABRIC, -.14);
       shadow(ctx, 0, -1, 31, 3.5);
-      orr(ctx, -26, -10, 6, 10, 2, P.woodDark); orr(ctx, 20, -10, 6, 10, 2, P.woodDark);
-      // reclined back + knitted throw
-      ctx.save(); ctx.translate(-18, -17); ctx.rotate(-.08);
-      orr(ctx, -10, -42, 21, 42, 9, C);
-      hl(ctx, -6, -38, 4, 20, 2);
-      dot(ctx, 3, -30, 1.3, CD); dot(ctx, 3, -19, 1.3, CD);
-      ctx.beginPath(); ctx.moveTo(-12, -13); ctx.lineTo(-12, -35); ctx.quadraticCurveTo(-12, -44, -3, -44); ctx.lineTo(6, -44);
-      ctx.quadraticCurveTo(12, -44, 12, -39); ctx.lineTo(11, -35.5); ctx.lineTo(-4, -34); ctx.lineTo(-4.5, -13); ctx.closePath();
-      ctx.fillStyle = P.lilac; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = OL; ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(-11.5, -27); ctx.lineTo(-4.5, -27); ctx.moveTo(-11.5, -20); ctx.lineTo(-4.5, -20); ctx.moveTo(-6, -40.5); ctx.lineTo(10, -40);
-      ctx.strokeStyle = P.cream; ctx.lineWidth = 1.6; ctx.stroke();
-      ctx.beginPath(); for (let i = 0; i < 4; i++) { const x = -11 + i * 2.2; ctx.moveTo(x, -13); ctx.lineTo(x - .3, -9.5); }
+      orr(ctx, -27, -10, 6, 10, 2, P.woodDark); orr(ctx, 21, -10, 6, 10, 2, P.woodDark);
+      // tall reclined back with tufted buttons
+      ctx.save(); ctx.translate(-16.5, -18); ctx.rotate(-.1);
+      orr(ctx, -11, -41, 23, 41, 10, C);
+      hl(ctx, -7, -37, 4, 22, 2);
+      ctx.beginPath(); ctx.moveTo(-4, -26); ctx.quadraticCurveTo(1, -24, 6, -26); ctx.strokeStyle = CD; ctx.lineWidth = 1.2; ctx.stroke();
+      dot(ctx, 1, -32, 1.4, CD); dot(ctx, 1, -18, 1.4, CD);
+      // knitted throw folded over the top-left corner
+      ctx.beginPath(); ctx.moveTo(-12.5, -16); ctx.lineTo(-12.5, -33); ctx.quadraticCurveTo(-12.5, -43, -3, -43); ctx.lineTo(3, -43);
+      ctx.quadraticCurveTo(5, -38, 2, -35); ctx.lineTo(-6, -33); ctx.lineTo(-6.5, -16); ctx.closePath();
+      ctx.fillStyle = P.lilac; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = OL; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-12, -28); ctx.lineTo(-6.5, -28); ctx.moveTo(-12, -22); ctx.lineTo(-6.5, -22); ctx.moveTo(-8, -40.5); ctx.lineTo(1, -39);
+      ctx.strokeStyle = P.cream; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.beginPath(); for (let i = 0; i < 3; i++) { const x = -11.5 + i * 2.4; ctx.moveTo(x, -16); ctx.lineTo(x - .3, -12.5); }
       ctx.strokeStyle = OL; ctx.lineWidth = 1.2; ctx.stroke();
       ctx.restore();
-      // seat cushion + heart cushion
+      // seat cushion + round cushion
       orr(ctx, -17, -37, 34, 9, 4.5, CL);
-      ctx.save(); ctx.translate(-6, -42); ctx.rotate(-.25); heart(ctx, 0, 0, 6.5, P.sun, 2); hl(ctx, -5, -4, 3, 2); ctx.restore();
+      hl(ctx, -14, -35.5, 14, 2);
+      circ(ctx, -8, -41, 6.5, P.sun, 2);
+      ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; ctx.moveTo(-8, -41); ctx.lineTo(-8 + Math.cos(a) * 5.5, -41 + Math.sin(a) * 5.5); }
+      ctx.strokeStyle = 'rgba(61,43,69,.25)'; ctx.lineWidth = 1; ctx.stroke();
+      circ(ctx, -8, -41, 1.6, P.coral, 1);
       // side panel + arm roll
-      orr(ctx, -29, -31, 60, 22, 10, C);
-      hl(ctx, -24, -28, 18, 2.4);
-      fillR(ctx, -27, -15, 56, 5, 3, DK);
+      orr(ctx, -30, -31, 61, 22, 10, C);
+      hl(ctx, -25, -28, 18, 2.4);
+      fillR(ctx, -28, -15, 57, 5, 3, DK);
       orr(ctx, -1, -41, 32, 13, 6.5, C);
       hl(ctx, 3, -39, 16, 2.4);
       ctx.beginPath(); ctx.arc(24.5, -34.5, 3.4, 0, TAU * .8); ctx.strokeStyle = CD; ctx.lineWidth = 1.5; ctx.stroke();
       seam(ctx, -1, -28, 30, -28, 1.1);
       // sewn-on patch
-      orr(ctx, -21, -25, 12, 10, 2, P.mint, 1.5);
-      ctx.setLineDash([1.6, 1.6]); rr(ctx, -19.6, -23.6, 9.2, 7.2, 1.2); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
+      orr(ctx, -22, -25, 12, 10, 2, P.mint, 1.5);
+      ctx.setLineDash([1.6, 1.6]); rr(ctx, -20.6, -23.6, 9.2, 7.2, 1.2); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
     },
   });
   K.define('st.chair', {
