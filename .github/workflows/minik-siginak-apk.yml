@@ -1,0 +1,61 @@
+name: Minik Sığınak APK
+
+on:
+  push:
+    paths:
+      - 'minik-siginak/**'
+      - '.github/workflows/minik-siginak-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: minik-siginak-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build the web game into the Android assets
+        working-directory: minik-siginak
+        run: node build.mjs --android
+
+      - name: Build the APK
+        working-directory: minik-siginak/android
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Name the APK
+        run: cp minik-siginak/android/app/build/outputs/apk/debug/app-debug.apk minik-siginak.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: minik-siginak-apk
+          path: minik-siginak.apk
+
+      - name: Publish to the "minik-siginak-latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete minik-siginak-latest --yes --cleanup-tag || true
+          gh release create minik-siginak-latest minik-siginak.apk \
+            --target "${{ github.sha }}" \
+            --prerelease \
+            --title "Minik Sığınak (son sürüm)" \
+            --notes "Android için en son Minik Sığınak APK'sı (dal: ${{ github.ref_name }}, commit: ${{ github.sha }}). Telefonda bu sayfadan minik-siginak.apk dosyasını indir, açınca 'bilinmeyen kaynaklara izin ver' de ve kur."
