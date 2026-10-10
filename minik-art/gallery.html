@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MinikArt Galeri</title>
+<style>
+  :root { --ink:#3d2b45; --paper:#fff7ea; --card:#ffffff; --line:#ead9c2; --muted:#7a6a80; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.35 system-ui, sans-serif; padding:16px; }
+  body.night { --paper:#2a2257; --card:#3b3478; --line:#4d4590; --muted:#c9c0ff; color:#fff7ea; }
+  h1 { margin:0 0 4px; font-size:22px; }
+  .meta { color:var(--muted); margin:0 0 14px; }
+  .grid { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-start; }
+  .card { background:var(--card); border:2px solid var(--line); border-radius:12px; padding:6px 8px 8px; }
+  .card h3 { margin:0 0 4px; font-size:12px; font-weight:700; }
+  .card small { display:block; color:var(--muted); font-size:11px; max-width:260px; }
+  .row { display:flex; gap:6px; flex-wrap:wrap; align-items:flex-end; }
+  .v { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .v span { font-size:10px; color:var(--muted); max-width:120px; text-align:center; overflow-wrap:anywhere; }
+  canvas { display:block; }
+  .err { color:#c0263e; font-weight:700; }
+</style>
+</head>
+<body>
+<h1>MinikArt Galeri</h1>
+<p class="meta" id="meta"></p>
+<div class="grid" id="grid"></div>
+<script src="core.js"></script>
+<script>
+  // Load every module that exists; missing files are fine while they are being written.
+  const MODULES = ['characters.js', 'furniture.js', 'nature.js', 'outdoor.js', 'icons.js', 'sketch.js', 'props.js', 'environment.js'];
+  const qs = new URLSearchParams(location.search);
+  const prefix = qs.get('prefix') || '';
+  const bg = qs.get('bg') || 'cream';
+  const SCALE = +(qs.get('scale') || 1.5);
+  const ONLY_DEFAULT = qs.get('states') === 'default';
+  const T = +(qs.get('t') || 0.3);
+  const SKETCH = qs.get('sketch') === '1';
+  if (bg === 'night') document.body.classList.add('night');
+  let pending = MODULES.length; const loadErrors = [];
+  for (const m of MODULES) {
+    const s = document.createElement('script'); s.src = m;
+    s.onload = () => { if (--pending === 0) render(); };
+    s.onerror = () => { loadErrors.push(m); if (--pending === 0) render(); };
+    document.head.appendChild(s);
+  }
+  function combos(states) {
+    const keys = Object.keys(states || {});
+    let out = [{}];
+    for (const k of keys) {
+      const vals = states[k]; const next = [];
+      for (const base of out) for (const v of vals) next.push(Object.assign({}, base, { [k]: v }));
+      out = next;
+      if (out.length > 64) break;
+    }
+    return out.slice(0, 8);
+  }
+  function label(o) { return Object.entries(o).map(([k, v]) => k + '=' + v).join(' ') || 'default'; }
+  function render() {
+    const K = window.MinikArt;
+    const names = K.list(prefix);
+    document.getElementById('meta').innerHTML =
+      `${SKETCH ? 'kalem stili · ' : ''}${names.length} asset · prefix "${prefix || '*'}" · ölçek ${SCALE} · t=${T}` +
+      (loadErrors.length ? ` · <span class="err">yüklenemedi: ${loadErrors.join(', ')}</span>` : '');
+    const grid = document.getElementById('grid');
+    for (const name of names) {
+      const d = K.get(name);
+      const card = document.createElement('div'); card.className = 'card';
+      card.innerHTML = `<h3>${name}</h3><small>${d.w}×${d.h} · anchor ${d.ax},${d.ay} · ${d.tags.join(', ')}${d.desc ? ' — ' + d.desc : ''}</small>`;
+      const row = document.createElement('div'); row.className = 'row';
+      const list = ONLY_DEFAULT ? [{}] : combos(d.states);
+      for (const st of list) {
+        const o = Object.assign({}, d.defaults, st, { t: T, seed: 7 });
+        const sized = d.tags.includes('sized');
+        const W = sized ? (o.w || d.w) : d.w, H = sized ? (o.h || d.h) : d.h;
+        const isIcon = d.tags.includes('icon') || d.tags.includes('fx');
+        const pad = 10, ghost = (!sized && !isIcon) ? 30 : 0;
+        const c = document.createElement('canvas');
+        const cw = Math.min(900, (W + pad * 2 + ghost)), ch = Math.max(H, ghost ? 66 : 0) + pad * 2;
+        c.width = Math.ceil(cw * SCALE); c.height = Math.ceil(ch * SCALE);
+        c.style.width = (cw * SCALE / (window.devicePixelRatio > 1 ? 1 : 1)) + 'px';
+        const cx = c.getContext('2d'); cx.scale(SCALE, SCALE);
+        const ax = sized ? 0 : d.ax, ay = sized ? 0 : d.ay;
+        const baseY = pad + Math.max(H, ghost ? 66 : 0) - (H - ay);
+        const x0 = pad + ax;
+        // baseline + anchor marker
+        cx.strokeStyle = 'rgba(200,120,140,.45)'; cx.lineWidth = 1; cx.setLineDash([3, 3]);
+        cx.beginPath(); cx.moveTo(0, baseY); cx.lineTo(cw, baseY); cx.stroke(); cx.setLineDash([]);
+        if (ghost) { // 64-unit person silhouette for scale
+          const gx = pad + W + 14;
+          cx.fillStyle = 'rgba(122,106,128,.22)';
+          cx.beginPath(); cx.arc(gx, baseY - 52, 12, 0, Math.PI * 2); cx.fill();
+          cx.fillRect(gx - 10, baseY - 40, 20, 40);
+        }
+        if (SKETCH && K.sprite) {
+          const e = K.sprite(name, o, SCALE, true);
+          if (e) cx.drawImage(e.c, x0 - e.ax / e.q, (sized ? pad : baseY) - e.ay / e.q, e.c.width / e.q, e.c.height / e.q);
+        } else K.draw(cx, name, x0, sized ? pad : baseY, o);
+        const v = document.createElement('div'); v.className = 'v';
+        v.appendChild(c);
+        const sp = document.createElement('span'); sp.textContent = label(st); v.appendChild(sp);
+        row.appendChild(v);
+      }
+      card.appendChild(row); grid.appendChild(card);
+    }
+    document.body.dataset.ready = '1';
+  }
+</script>
+</body>
+</html>

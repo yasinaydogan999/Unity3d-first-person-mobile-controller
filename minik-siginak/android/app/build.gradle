@@ -1,0 +1,29 @@
+plugins {
+    id 'com.android.application'
+}
+
+def runNumber = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as Integer
+
+android {
+    namespace 'com.minik.siginak'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.minik.siginak'
+        minSdk 24
+        targetSdk 34
+        versionCode runNumber
+        versionName "0.1.${runNumber}"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
